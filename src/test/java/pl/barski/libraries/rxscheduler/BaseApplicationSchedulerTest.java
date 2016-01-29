@@ -44,6 +44,8 @@ public class BaseApplicationSchedulerTest {
 
         systemUnderTest.unsubscribeTaskByTag(this);
 
+        TRAVIS TEST !!!
+
         assertFalse(systemUnderTest.keepsSubscription(this));
     }
 }
