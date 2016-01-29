@@ -20,4 +20,6 @@ public interface ApplicationScheduler {
     void unsubscribeTaskByTag(Object subscriber);
 
     void schedule(Subscription subscription, Object placePresenter);
+
+    boolean keepsSubscription(Object subscriber);
 }

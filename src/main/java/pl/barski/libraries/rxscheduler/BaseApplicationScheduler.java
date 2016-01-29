@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static pl.barski.libraries.rxscheduler.RxUtils.doNothing;
+import static pl.barski.libraries.rxscheduler.RxUtils.ignore;
+
 /**
  * The base implementation of application scheduler.
  */
@@ -28,12 +31,12 @@ public class BaseApplicationScheduler implements ApplicationScheduler {
 
     @Override
     public <T> void schedule(Observable<T> observable, Action1<T> onNextAction, Object subscriber) {
-        schedule(observable, onNextAction, error -> doNothing(), this::doNothing, obtainTag(subscriber));
+        schedule(observable, onNextAction, error -> doNothing(), ignore(), obtainTag(subscriber));
     }
 
     @Override
     public <T> void schedule(Observable<T> observable, Action1<T> onNextAction, Action1<Throwable> onError, Object subscriber) {
-        schedule(observable, onNextAction, onError, this::doNothing, obtainTag(subscriber));
+        schedule(observable, onNextAction, onError, ignore(), obtainTag(subscriber));
     }
 
     @Override
@@ -66,6 +69,12 @@ public class BaseApplicationScheduler implements ApplicationScheduler {
         subscribe(subscription, subscriber);
     }
 
+    @Override
+    public boolean keepsSubscription(Object subscriber) {
+        String tag = obtainTag(subscriber);
+        return subscriptions.containsKey(tag) && subscriptions.get(tag).size() > 0;
+    }
+
     private boolean subscribe(Subscription subscription, Object subscriber) {
         String tag = obtainTag(subscriber);
         if (!subscriptions.containsKey(tag)) {
@@ -78,6 +87,4 @@ public class BaseApplicationScheduler implements ApplicationScheduler {
         return subscriber.toString();
     }
 
-    private void doNothing() {
-    }
 }
